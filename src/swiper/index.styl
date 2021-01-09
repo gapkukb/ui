@@ -1,0 +1,68 @@
++block( swiper )
+  position relative
+  overflow hidden
+
+  +element( items )
+    display flex
+    flex-wrap nowrap
+    align-items stretch
+    height 100%
+    transition transform 300ms
+
+    &>img
+      width 100%
+      height 100%
+      object-fit contain
+
+  +element( item )
+    flex-shrink 0
+    width 100%
+
+  +element( ctrl )
+    position absolute
+    top 50%
+    z-index 1
+    margin-top -0.5em
+    width 1em
+    height 1em
+    font-size 50px
+    opacity 0.5
+    cursor pointer
+    transition opacity 300ms
+
+    &:hover
+      opacity 1
+
+  +element( prev )
+    left 0
+    border-radius 0 99px 99px 0
+
+  +element( next )
+    right 0
+
+  +element( dots )
+    position absolute
+    bottom 10px
+    left 50%
+    display flex
+    transform translate3d( 0, -50%, 0 )
+
+  +element( dot )
+    width 1em
+    height 1em
+    background-color yellow
+
+    +modifier( active )
+      background-color red
+
+  +element( item1 )
+    background-color aqua
+
+  +element( item2 )
+    background-color blueviolet
+
+  +element( item3 )
+    background-color brown
+
+  +element( item4 )
+    background-color darkgreen

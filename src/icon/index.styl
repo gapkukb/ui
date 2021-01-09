@@ -1,0 +1,36 @@
++block( icon )
+  position relative
+  vertical-align middle
+  font-style normal
+  font-size inherit
+  text-rendering auto
+  -webkit-font-smoothing antialiased
+
+  &
+    @extends $inline
+
+  +element( img )
+    width 1em
+    height 1em
+    object-fit contain
+
+  +element( badge )
+    position absolute
+    top 0
+    right 0
+    box-sizing border-box
+    padding 2px 4px
+    min-width 18px
+    border 1px solid #999
+    border-radius 16px
+    background-color #ee0a24
+    color #fff
+    text-align center
+    font-weight normal
+    font-size 12px
+    line-height 1
+    transform translate( 50%, -50% )
+
+    &:empty
+      padding 4px
+      min-width 0
