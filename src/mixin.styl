@@ -1,0 +1,41 @@
+$flex
+  display flex
+  flex-wrap wrap
+  align-items center
+  max-width 100%
+
+$inline
+  display inline-flex
+  align-items center
+
+lineheight( n )
+  height n
+  line-height @height - 2
+
+tofixed( n, dicimal = 2 )
+  depth = 10 ** dicimal
+  return ( floor( n * depth ) / depth )
+
+loop( ns, source, attr, modifier = "" )
+  +block( ns )
+    for $k, $v in source
+      +modifier( $k )
+        &
+          {attr} $v
+
+ie( express, ieUpTo = 11 )
+  @supports not ( {express}  )
+    {block}
+
+  if ieUpTo == 9
+    unquote( "@media screen and (min-width:0\0) and (min-resolution:.001dpcm) {" )
+    {block}
+    unquote( "}" )
+  else if ieUpTo == 10
+    unquote( "@media screen and (min-width:0\0) {" )
+    {block}
+    unquote( "}" )
+  else
+    unquote( "@media screen\0 {" )
+    {block}
+    unquote( "}" )

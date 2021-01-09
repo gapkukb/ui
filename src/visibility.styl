@@ -1,0 +1,81 @@
++block( none )
+  display none
+
++block( invisible )
+  visibility hidden
+
++block( ellipsis )
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
+  word-break break-all
+
++block( ellipses )
+  @supports ( -webkit-line-clamp 2 )
+    display -webkit-box
+    overflow hidden
+    -webkit-box-orient vertical
+
+    +modifier( 2 )
+      -webkit-line-clamp 2
+
+    +modifier( 3 )
+      -webkit-line-clamp 3
+
+  +ie( "-webkit-line-clamp:2" )
+    /
+      ^[0]
+        position relative
+        overflow hidden
+        background-color inherit
+        text-align justify
+
+        &:before
+        &:after
+          position absolute
+          right 0
+          width 1em
+          background-color inherit
+
+        &:before
+          bottom 0
+          content "..."
+          text-align right
+
+        &:after
+          margin-top 0.2em
+          height 1em
+          content ""
+
+        +modifier( 2 )
+          max-height 2em
+
+        +modifier( 3 )
+          max-height 3em
+
++block( "over" )
+  for $k, $v in $overflow
+    +modifier( $k )
+      overflow $v
+
+    +modifier( x, $k )
+      overflow-x $v
+
+    +modifier( y, $k )
+      overflow-y $v
+
++block( fit )
+  position relative
+
+  for $item in $object-fits
+    +modifier( $item )
+      &>img
+        max-width 100%
+        max-height 100%
+        object-fit $item
+
+        &:not([width])
+          width 100%
+
+        &:not([height])
+          height 100%

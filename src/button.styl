@@ -1,0 +1,174 @@
++block( button )
+  display inline-block
+  overflow visible
+  box-sizing border-box
+  padding 0 24px
+  outline 0
+  border 1px solid transparent
+  border-radius 8px
+  background none
+  color #343434
+  vertical-align middle
+  text-align center
+  text-decoration none
+  text-transform uppercase
+  font inherit
+  font-size 16px
+  cursor pointer
+  transition all 300ms
+  user-select none
+  lineheight 40px
+
+$sm
+  padding 0 16px
+  font-size 14px
+  lineheight 32px
+
+$xs
+  padding 0 8px
+  font-size 12px
+  lineheight 24px
+
++block( button )
+  &:disabled
+  &.disabled
+    background #5d5a59
+    color #949494
+    cursor not-allowed
+
+    &:not(button)
+      pointer-events none
+
+  &:not(:disabled):not(.disabled):hover
+    filter brightness( 0.9 )
+
+  &.active
+  &:active
+  &:focus
+    filter brightness( 1.1 )
+
+  +modifier( square )
+    padding 0
+    width 40px
+
+    ../
+      +modifier( sm )
+        ^[1]&
+          width 32px
+
+        &
+          @extends $sm
+
+      +modifier( xs )
+        ^[1]&
+          width 24px
+
+        &
+          @extends $xs
+
+  +modifier( sm )
+    &
+      @extends $sm
+
+  +modifier( xs )
+    &
+      @extends $xs
+
+  +modifier( primary )
+    background linear-gradient( 90deg, #e3be8d 0, #d79e50 100% )
+
+  +modifier( secondary )
+    background #e2bd8d
+
+  +modifier( "blue" )
+    background #3fb5ff
+
+  +modifier( outline )
+    border-color #8b6634
+    background linear-gradient( to left, transparent 50%, #e2bd8d 50% )
+    background-position right bottom
+    background-size 200% 100%
+    color #a6a6a6
+
+    &:not(:disabled):not(.disabled):hover
+      border-color #e2bd8d
+      background-position left bottom
+      color #343434
+
+    &.active
+    &:active
+    &:focus
+      border-color #ead0b0
+      background #ead0b0
+      color #343434
+
+    &:disabled
+    &.disabled
+      border-color #5d5a59
+      background none
+      color #4d4d4d
+
+  +modifier( link )
+    color #737373
+
+    &:not(:disabled):not(.disabled):hover
+      color #a6a6a6
+      text-decoration underline
+
+    &:active
+    &:focus
+    &.active
+      color #a6a6a6
+
+    &:disabled
+    &.disabled
+      background none
+      color #4d4d4d
+
+  +modifier( "block" )
+    display block
+
+  &[icon]
+  &[icon-right]
+    font-style normal
+    font-size 100%
+    font-family "iconfont"
+    -webkit-font-smoothing antialiased
+
+  &[icon]:before
+    margin-right 1em
+    content attr( icon )
+
+  &[icon-right]:before
+    margin-left 1em
+    content attr( icon-right )
+
+  /
+    +block( bgroup )
+      &
+        @extends $inline
+
+      &>^[0]
+        border-radius 0
+
+      +modifier( sm )
+        &>^[0]
+          @extends $sm
+
+      +modifier( xs )
+        &>^[0]
+          @extends $xs
+
+      for $key, $value in $gaps
+        +modifier( "round", $key )
+          &>^[0]
+            &:first-child
+              border-top-left-radius $value
+              border-bottom-left-radius $value
+
+            &:last-child
+              border-top-right-radius $value
+              border-bottom-right-radius $value
+
+            &:not(:last-child)
+              border-right-color transparent

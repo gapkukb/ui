@@ -1,0 +1,96 @@
+// global
+$sizes ?= xs sm md lg xl
+// layout
+$cols ?= 24
+$gaps ?= {
+  xxs: 4px,
+  xs: 8px,
+  sm: 16px,
+  md: 24px,
+  lg: 32px,
+  xl: 40px
+}
+$breakpoints ?= {
+  xs: 0,
+  sm: 600px,
+  md: 1024px,
+  lg: 1440px,
+  xl: 1920px
+}
+$justify-content ?= {
+  left: flex-start,
+  right: flex-end,
+  between: space-between,
+  around: space-around,
+  evenly: space-evenly,
+  stretch: stretch,
+  center: center
+}
+$align-items ?= {
+  top: flex-start,
+  bottom: flex-end,
+  center: center,
+  stretch: stretch,
+  baseline: baseline
+}
+$align-content ?= {
+  top: flex-start,
+  botttom: flex-end,
+  between: space-between,
+  around: space-around,
+  evenly: space-evenly,
+  stretch: stretch,
+  center: center
+}
+$overflow ?= {
+  visible: visible,
+  hidden: hidden,
+  scroll: scroll,
+  auto: auto
+}
+$text-aligns ?= {
+  left: left,
+  center: center,
+  right: right,
+  justify: justify
+}
+$vertical-aligns ?= {
+  top: top,
+  bottom: bottom,
+  middle: middle,
+  baseline: baseline
+}
+$buttons ?= {
+  colors: {
+    primary: {
+      background-image: linear-gradient( 90deg, #e3be8d 0, #d79e50 100% )
+    },
+    secondary: {
+      background-color: #e2bd8d
+    },
+    blue: {
+      background-color: #3fb5ff
+    }
+  },
+  sizes: {
+    xs: {
+      height: 24px,
+      font-size: 12px,
+      padding: "0 12px",
+      min-width: null
+    },
+    sm: {
+      height: 32px,
+      font-size: 12px,
+      padding: "0 24px",
+      min-width: 104px
+    },
+    default: {
+      height: 40px,
+      font-size: 16px,
+      padding: "0 24px",
+      min-width: 136px
+    }
+  }
+}
+$object-fits = fill contain cover none scale-down

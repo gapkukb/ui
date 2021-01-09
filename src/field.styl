@@ -1,0 +1,145 @@
++block( field )
+  &
+    @extends $inline
+
+  position relative
+  overflow hidden
+  box-sizing border-box
+  padding 10px 16px
+  width 100%
+  background-color #ddd
+  color #323233
+  font-size 14px
+  line-height 24px
+
+  &:focus
+    outline 0
+
+  +modifier( top )
+    align-items flex-start
+
+  +modifier( required )
+    overflow visible
+
+    &:before
+      position absolute
+      left 8px
+      color #ee0a24
+      content "*"
+      font-size 14px
+
+  +modifier( "error" )
+    /
+      +element( value )
+        ^[1] &
+        ^[1] &::placeholder
+          color #ee0a24
+          -webkit-text-fill-color currentColor
+
+  +element( label )
+    flex none
+    box-sizing border-box
+    margin-left 12px
+    width 6.2em
+    color #646566
+    text-align left
+    word-wrap break-word
+    -webkit-box-flex 0
+    -webkit-flex none
+    $dir = right
+
+    +modifier( $dir )
+      /
+        +modifier( $dir )
+          ^[0]&
+          ^[2]
+            text-align $dir
+
+    $dir = center
+
+    +modifier( $dir )
+      /
+        +modifier( $dir )
+          ^[0]&
+          ^[2]
+            text-align $dir
+
+  +element( main )
+    position relative
+    flex 1
+    overflow visible
+    padding-left 12px
+    vertical-align middle
+    cursor pointer
+
+  +element( body )
+    align-items flex-start
+    width 100%
+
+    &
+      @extends $inline
+
+  +element( value )
+    display block
+    box-sizing border-box
+    margin 0
+    padding 0
+    min-width 0
+    width 100%
+    outline 0
+    border 0
+    background-color transparent
+    color #323233
+    text-align inherit
+    word-wrap break-word
+    font inherit
+    line-height inherit
+    resize none
+    transition height 100ms
+
+    &:disabled
+      color #c8c9cc
+      opacity 1
+      cursor not-allowed
+      -webkit-text-fill-color #c8c9cc
+
+    &::-webkit-search-cancel-button
+      display none
+
+    &::-webkit-outer-spin-button
+    &::-webkit-inner-spin-button
+      -webkit-appearance none
+
+    &:[type="number"]
+      -moz-appearance textfield
+
+  +element( disabled )
+    color #323233
+
+  +element( "error" )
+    color #ee0a24
+    font-size 12px
+
+  +element( button )
+    padding-left 8px
+
+  +group(  )
+    element( clear )
+    element( icon-right )
+    element( icon-link )
+    flex-shrink 0
+    margin-right -8px
+    padding 0 8px
+    line-height inherit
+
+  +group(  )
+    element( button )
+    element( icon )
+    flex-shrink 0
+
+  +element( limit )
+    margin-top 4px
+    color #646566
+    text-align right
+    font-size 12px
+    line-height 16px

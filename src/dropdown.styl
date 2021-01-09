@@ -1,0 +1,120 @@
++block( dropdown )
+  $color1 = #1b1916
+  $color2 = #252321
+  $color3 = #4d4d4d
+  $color4 = #d79e50
+  position relative
+  display inline-block
+  color $color3
+  white-space nowrap
+  font-size 14px
+
+  &-enter-active
+  &-leave-active
+    transition all 200ms ease-in
+    transition-property opacity, transform
+
+  &-enter
+  &-leave-to
+    opacity 0
+    transform translateY( 6px )
+
+  +element( rel )
+    padding 0 16px
+    height 48px
+    border-radius 8px
+    background-color $color1
+    line-height @height
+    cursor pointer
+
+  +element( icon )
+    display inline-block
+    margin-left 8px
+
+    ../
+      +modifier( opened )
+        & ^[1]
+          transform scaleY( -1 )
+
+  +element( main )
+    position absolute
+    z-index 2
+    padding 4px 0
+    min-width 100%
+
+  +element( inner )
+    padding 8px 0
+    border-radius 4px
+    background-color $color1
+    cursor pointer
+
+  +element( body )
+    overflow hidden auto
+    max-height 250px
+
+  +element( item )
+    display flex
+    padding 0 8px
+    height 32px
+    line-height 32px
+    transition all 300ms
+    transition-property background-color, color
+
+    >
+      +block( icon )
+        margin-right 8px
+
+    +modifier( right )
+      flex-direction row-reverse
+      justify-content space-between
+
+      +block( icon )
+        margin-right 0
+        margin-left 8px
+
+    /
+      +element( selected )
+        ^[1]:hover
+        &
+          background-color $color3
+          color $color4
+
+  +element( divided )
+    margin-top 4px
+    border-top 1px solid $color2
+
+  +element( disabled )
+    opacity 0.5
+    cursor not-allowed
+
+    &:hover
+      background-color transparent
+      color inherit
+
+  +element( input )
+    box-sizing border-box
+    padding 8px 4px
+    width 100%
+    outline 0
+    border none
+    background none
+    color #fff
+    font-size inherit
+    line-height 1
+    appearance none
+
+    &::-webkit-input-placeholder /* WebKit browsers */
+      color $color3
+
+    &:-moz-placeholder /* Mozilla Firefox 4 to 18 */
+      color $color3
+
+    &::-moz-placeholder /* Mozilla Firefox 19+ */
+      color $color3
+
+    &:-ms-input-placeholder /* Internet Explorer 10+ */
+      color $color3
+
+  +element( footer )
+    padding 8px
+    border-top 1px solid $color2

@@ -1,0 +1,66 @@
++block( option )
+  $gap = $gaps.xs
+  margin-right $gap * -1
+  cursor pointer
+
+  &
+    @extends $inline
+    flex-direction row-reverse
+
+  +modifier( disabled )
+    opacity 0.5
+    cursor not-allowed
+
+  +element( icon )
+    margin-right $gap
+    font-size 120%
+
+  +element( label )
+    margin-right $gap
+
++block( checkbox )
+  position relative
+  cursor pointer
+  user-select none
+
+  &
+    @extends $inline
+
+  +modifier( disabled )
+    opacity 0.5
+    cursor not-allowed
+
+  +element( label )
+    line-height 1
+
+    /
+      +element( icon )
+        width 1em
+        height 1em
+        border 2px solid currentColor
+        border-radius 4px
+        color red
+        text-align center
+        line-height 0.8em
+
+        &:after
+          display inline-block
+          width 40%
+          height 60%
+          border 0 solid currentColor
+          border-width 0 2px 2px 0
+          content ""
+          opacity 0
+          transform rotate( 45deg )
+
+        :checked ~ &
+          background-color #eee
+
+          &:after
+            opacity 1
+
+        &+^[1]
+          margin-left 0.5em
+
+        ^[1]+&
+          margin-left 0.5em

@@ -1,0 +1,341 @@
+[class^=ui]
+  box-sizing border-box
+  margin 0
+  padding 0
+
++block( row-inline )
+  &
+    @extends $inline
+
++block( row )
+  &
+    @extends $flex
+
+  +modifier( wrap )
+    flex-wrap wrap
+
+  +modifier( nowrap )
+    flex-wrap nowrap
+
+  +modifier( reverse )
+    flex-direction row-reverse
+
+  +modifier( column )
+    flex-direction column
+
+    ../
+      +modifier( reverse )
+        &^[1]
+          flex-direction column-reverse
+
++block( justify )
+  for $key, $value in $justify-content
+    +modifier( $key )
+      justify-content $value
+
+      /
+        if $key == evenly
+          +ie( "justify-content:evenly" )
+            ^[1]:before
+            ^[1]:after
+              display block
+              content ""
+
++block( align )
+  +modifier( top )
+    align-items flex-start
+    align-content flex-start
+
+  +modifier( center )
+    align-items center
+    align-content center
+
+  +modifier( bottom )
+    align-items flex-end
+    align-content flex-end
+
++block( multiple )
+  for $key, $value in $align-content
+    +modifier( $key )
+      align-content $value
+
+      /
+        if $key == evenly
+          +ie( "align-content:evenly" )
+            ^[1]:before
+            ^[1]:after
+              display block
+              content ""
+
++block( single )
+  for $key, $value in $align-items
+    +modifier( $key )
+      align-items $value
+
++block( col )
+  display block
+  box-sizing border-box
+  min-width 0
+
+  +modifier( fill )
+    flex 1
+
+  +modifier( unshrink )
+    flex-shrink 0
+
+  $keys = keys( $breakpoints )
+  $values = values( $breakpoints )
+
+  for $name, $breakpoint in $breakpoints
+    $i = index( $keys, $name )
+    $j = $values[index( $values, $breakpoint ) -1]
+    $name = $name == "xs" ? null : $name
+
+    @media ( max-width $breakpoint )
+      if $i
+        /
+          +block( hide )
+            +modifier( $keys[$i - 1] )
+              display none
+
+    @media ( min-width $breakpoint )
+      if $i
+        /
+          +block( show )
+            +modifier( $keys[$i - 1] )
+              display none
+
+      for $col in 1 .. $cols
+        +self( $name )
+          +modifier( $col )
+            width floor( percentage( ( $col / $cols ) ), 4 )
+
+        /
+          +block( offset )
+            +self( $name )
+              +modifier( $col )
+                margin-left floor( percentage( ( $col / $cols ) ), 4 )
+
+      /
+        +block( gap )
+          +self( $name )
+            for $dir in "" x y
+              +self( $dir )
+                for $key, $gap in $gaps
+                  +modifier( $key )
+                    if $dir != y
+                      margin-right $gap * -1
+
+                    if $dir != x
+                      margin-bottom $gap * -1
+
+                    &>^[0]
+                      if $dir != y
+                        padding-right $gap
+
+                      if $dir != x
+                        padding-bottom $gap
+
+for $type in "margin" "padding"
+  $t = substr( $type, 0, 1 )
+
+  for $dir in left right top bottom x y a
+    $d = substr( $dir, 0, 1 )
+
+    +block( $t + $d )
+      for $key, $value in $gaps
+        +modifier( $key )
+          if $d == x
+            {$type}-right $value
+            {$type}-left $value
+          else if $d == y
+            {$type}-top $value
+            {$type}-bottom $value
+          else if $d == a
+            {$type} $value
+          else
+            {$type}-{$dir} $value
+
++block( at )
+  +modifier( left )
+    margin-right auto
+
+  +modifier( right )
+    margin-left auto
+
+  +modifier( center )
+    margin-right auto
+    margin-left auto
+
+  +modifier( top )
+    margin-bottom auto
+
+  +modifier( middle )
+    margin-top auto
+    margin-bottom auto
+
+  +modifier( bottom )
+    margin-top auto
+
+  +modifier( core )
+    margin auto
+
++block( text )
+  for $k, $v in $text-aligns
+    +modifier( $k )
+      text-align $v
+
+    +modifier( bold )
+      font-weight bold
+
+    +modifier( normal )
+      font-weight normal
+
+    +modifier( thin )
+      font-weight lighter
+
+    +modifier( italic )
+      font-style italic
+
+    +modifier( upper )
+      text-transform uppercase
+
+    +modifier( lower )
+      text-transform lowercase
+
+    +modifier( cap )
+      text-transform capitalize
+
+  for $item in 0 12 14 16 18 20 24 36 48
+    +modifier( $item )
+      font-size $item
+
++block( vertical )
+  for $k, $v in $vertical-aligns
+    +modifier( $k )
+      text-align $v
+
++block( win )
+  +modifier( xy )
+    width 100vw
+    height 100vh
+
+  +modifier( x )
+    width 100vw
+
+  +modifier( y )
+    height 100vh
+
++block( full )
+  +modifier( xy )
+    width 100%
+    height 100%
+
+  +modifier( x )
+    width 100%
+
+  +modifier( y )
+    height 100%
+
++block( center )
+  top 50%
+  left 50%
+  transform translate( -50%, -50% )
+
+  $xcenter
+    left 50%
+    transform translate( -50%, 0 )
+
+  +modifier( top )
+    top 0
+    left 50%
+    transform translate( -50%, 0 )
+
+  +modifier( bottom )
+    bottom 0
+    left 50%
+    transform translate( -50%, 0 )
+
+  +modifier( left )
+    top 50%
+    left 0
+    transform translate( 0, -50% )
+
+  +modifier( right )
+    top 50%
+    right 0
+    transform translate( 0, -50% )
+
++block( left )
+  +modifier( top )
+    top 0
+    left 0
+
+  +modifier( bottom )
+    bottom 0
+    left 0
+
++block( right )
+  +modifier( top )
+    top 0
+    right 0
+
+  +modifier( bottom )
+    right 0
+    bottom 0
+
++block( fixed )
+  position fixed
+
++block( absolute )
+  position absolute
+
++block( relative )
+  position relative
+
++block( unselectable )
+  user-select none
+
++block( unevent )
+  pointer-events none
+
++block( "block" )
+  display block
+
++block( transition )
+  transition all 200ms
+
++block( flip, x )
+  filter FlipH
+  transform scaleX( -1 )
+
++block( flip, y )
+  filter FlipV
+  transform scaleY( -1 )
+
+for $i in 1 .. 360 / 45 - 1
+  +block( rotate, $i * 45 )
+    transform rotate( $i * 45deg )
+
+for $i in 0 2 4 6 8 12 14 16 18 20
+  if even( $i )
+    +block( scale, $i )
+      transform scale( $i * 0.1 )
+
++block( "round" )
+  border-radius 50%
+
+  for $k, $v in $gaps
+    +modifier( $k )
+      border-radius $v
+
++block( borderless )
+  border none
+
++block( iblock )
+  display inline-block
+
++block( interactive )
+  cursor pointer
+  user-select none
+  touch-action manipulation

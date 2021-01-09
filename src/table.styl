@@ -1,0 +1,59 @@
++block( table )
+  width 100%
+  border-spacing 0
+  border-collapse collapse
+  table-layout fixed
+
+  +element( header )
+    overflow hidden
+
+  +element( th )
+    position relative
+    overflow hidden
+    padding 8px 0
+    height 100%
+    white-space nowrap
+
+  +group(  )
+    element( th )
+    element( td )
+    overflow hidden
+    box-sizing border-box
+    padding-right 18px
+    padding-left 18px
+    min-width 0
+    height 48px
+    border-bottom 1px solid #e8eaec
+    vertical-align middle
+    text-align left
+    text-overflow ellipsis
+    white-space normal
+    word-break break-all
+
+  +modifier( stripe )
+    tr:nth-child(2n)>td
+      background-color #eee
+      color #000
+
+  +modifier( border )
+    border 1px solid #dcdee2
+    border-right 0
+    border-bottom 0
+
+    td
+    th
+      border-right 1px solid #e8eaec
+
+  +modifier( hover )
+    td
+      transition background-color 300ms
+
+    tr:hover td
+      background-color red
+      color gold
+
+  +element( highlight )
+    &
+    &>td
+      background-color green
+      color gold

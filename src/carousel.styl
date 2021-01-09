@@ -1,0 +1,65 @@
++block( slider )
+  position relative
+  overflow hidden
+  width 100%
+  height 100%
+  background-color #ddd
+  user-select none
+
+  img
+    max-width 100%
+
+  +element( ctrl )
+    position absolute
+    bottom 50%
+    z-index 2
+    padding 32px
+    font-size 32px
+    opacity 0.5
+    cursor pointer
+    transition 200ms opacity
+    transform translateY( 50% )
+
+    &:hover
+      opacity 1
+
+  +element( next )
+    right 0
+
+  +element( prev )
+    left 0
+
+  +element( track )
+    display flex
+    height 100%
+
+  +element( item )
+    position relative
+    flex-shrink 0
+    width 100%
+    height 100%
+
+  +element( dots )
+    position absolute
+    bottom 10px
+    left 50%
+    font-size 8px
+    cursor pointer
+    transform translate( -50%, 50% )
+
+    &
+      @extends $inline
+
+    &.virtical
+      bottom 50%
+      left calc( 100% - 10px )
+      flex-direction column
+
+  +element( dot )
+    margin 4px
+    padding 0.5em
+    border-radius 50%
+    background-color green
+
+  +element( active )
+    background red

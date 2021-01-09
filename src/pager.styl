@@ -1,0 +1,50 @@
++block( pager )
+  display flex
+  align-items center
+  margin-right -8px
+  color #a8a8a8
+
+  +element( button )
+    margin-right 8px
+    padding 0 4px
+    min-width 28px
+    height 28px
+    outline 0
+    border 0
+    border-radius 2px
+    background none
+    color inherit
+    font-size inherit
+    line-height @height
+    cursor pointer
+
+    &:hover:not(:disabled)
+      background #363332
+
+    &:disabled
+      opacity 0.8
+      cursor not-allowed
+
+  +element( active )
+    &
+      background linear-gradient( 90deg, #e3be8d, #d79e50 )
+      color #633100
+      font-weight 500
+      opacity 1 !important
+      cursor not-allowed
+
+  +group(  )
+    element( up )
+    element( down )
+
+    /
+      +block( icon )
+        ^[1]>&
+          display none
+
+        ^[1]:hover
+          &>span
+            display none
+
+          &>^[-1]
+            display inline

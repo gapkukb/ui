@@ -1,0 +1,23 @@
++block( image )
+  position relative
+  justify-content center
+  background-color #eee
+  vertical-align middle
+
+  &
+    @extends $inline
+
+  +modifier( "round" )
+    border-radius 9999px
+
+  +element( img )
+    display block
+    width 100%
+    height 100%
+    border-radius inherit
+
+  +group(  )
+    element( loading )
+    element( "error" )
+    color #dcdee0
+    font-size 32px

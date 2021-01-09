@@ -1,0 +1,33 @@
++block( tab )
+  position relative
+
+  +element( navs )
+    &
+      @extends $flex
+
+  +element( nav )
+    margin-right 40px
+    padding 0 8px
+    height 40px
+    border-bottom 2px solid transparent
+    color #4d4d4d
+    font-size 16px
+    line-height 28px
+    cursor pointer
+    transition font-size 200ms
+
+    &:last-child
+      margin-right 0
+
+    /
+      +element( disabled )
+        opacity 0.8
+        cursor not-allowed
+
+        /
+          +element( active )
+            &
+            ^[1]:not(^[3]):hover
+              border-color #ddb173
+              color #d9d9d9
+              font-size 20px
