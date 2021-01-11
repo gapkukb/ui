@@ -103,67 +103,6 @@ export const randomId = (n = 8) => {
   );
 };
 
-export function columns(cols) {
-  var columns = makeId(cols);
-  let maxLevel = 1;
-  function traverse(column, parent) {
-    if (parent) {
-      // 如果存在父级，则当前项的层级等于父层级+1，并更新最大层级变量
-      var l = (column.level = parent.level + 1);
-      if (maxLevel < l) maxLevel = l;
-    }
-    //设置跨列
-    if (column.children) {
-      let colspan = 0;
-      column.children.forEach((sub) => {
-        // 归的时候逐层将父级colspan累加上子项的colspan
-        traverse(sub, column);
-        colspan += sub.colspan;
-      });
-      column.colspan = colspan;
-    } else {
-      // 如果不存在子项,则不需要进行跨列，将colspan设为1
-      column.colspan = 1;
-    }
-  }
-  columns.forEach((column) => {
-    column.level = 1;
-    traverse(column);
-  });
-  // 初始化行数，总行数等于树深度
-  const rows = new Array(maxLevel).fill(0).map(() => Array());
-  // 平铺树结构
-  flatTree(columns).forEach((column) => {
-    // 跨行数 = 最大深度减去当前深度
-    if (!column.children) column.rowspan = maxLevel - column.level + 1;
-    else column.rowspan = 1;
-    rows[column.level - 1].push(column);
-  });
-  return rows;
-}
-
-function makeId(columns) {
-  return columns.map((item) => {
-    if ("children" in item) makeId(item.children);
-    item.__id = randomId();
-    return item;
-  });
-}
-
-export function flatTree(cols) {
-  // 将树结构进行平铺
-  const result = [];
-  cols.forEach((column) => {
-    if (column.children) {
-      result.push(column);
-      result.push.apply(result, getAll(column.children));
-    } else {
-      result.push(column);
-    }
-  });
-  return result;
-}
-
 export function deepclone(data) {
   let clone, i;
   if (assert.array(data)) {

@@ -1,90 +1,106 @@
 <template>
-  <table :class="tableclass" :rules="_border.rules" :frame="_border.frame">
-    <thead>
-      <tr v-for="(cols, rindex) in rows" :key="rindex">
-        <th
-          v-for="(col, cindex) in cols"
-          :key="cindex"
-          :colspan="col.colspan"
-          :rowspan="col.rowspan"
+  <div class="ui-table-outer">
+    <table :class="_tableclass" :rules="_border.rules" :frame="_border.frame">
+      <colgroup>
+        <col
+          v-for="(col, index) in cols"
+          :key="index"
+          :width="col.width || null"
+        />
+      </colgroup>
+      <thead>
+        <tr v-for="(cols, rindex) in rows" :key="rindex">
+          <th
+            v-for="(col, cindex) in cols"
+            :key="cindex"
+            :colspan="col.colspan"
+            :rowspan="col.rowspan"
+            :class="headerclass(col)"
+          >
+            <!-- 有扩展项 -->
+            <template v-if="col.type === rtype.EXPAND">
+              <render-header
+                v-if="col.renderHeader"
+                :render="col.renderHeader"
+                :col="col"
+                :index="cindex"
+              ></render-header>
+              <template v-else>{{ col.title }} </template>
+            </template>
+            <!-- 选择项 -->
+            <template v-else-if="col.type === rtype.SELECTION">
+              <input type="checkbox" />
+            </template>
+            <template v-else>
+              <render-header
+                v-if="col.renderHeader"
+                :col="col"
+                :render="col.renderHeader"
+                :index="cindex"
+              ></render-header>
+              <template v-else>{{ col.title || "#" }} </template>
+              <svg viewbox="0 0 90 180" height="1em" v-if="col.sortable">
+                <polygon
+                  class="ui-table__asc"
+                  points="0,75 45,30 90,75"
+                  @click="sortAction(rindex)"
+                />
+                <polygon
+                  class="ui-table__desc"
+                  points="0,105 45,150, 90 105"
+                  @click="sortAction(rindex)"
+                />
+              </svg>
+            </template>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(row, rindex) in rebuildData"
+          :key="rowKey ? row._rowKey : rindex"
+          :class="_rowclass"
+          :draggable="draggable"
+          @click="$emit('row-click', $event)"
         >
-          <!-- 有扩展项 -->
-          <template v-if="col.type === rtype.EXPAND">
-            <render-header
-              v-if="col.renderHeader"
-              :render="col.renderHeader"
-              :col="col"
-              :index="cindex"
-            ></render-header>
-            <template v-else>{{ col.title }} </template>
-          </template>
-          <!-- 选择项 -->
-          <template v-else-if="col.type === rtype.SELECTION">
-            <input type="checkbox" />
-          </template>
-          <template v-else>
-            <render-header
-              v-if="col.renderHeader"
-              :col="col"
-              :render="col.renderHeader"
-              :index="cindex"
-            ></render-header>
-            <template v-else>{{ col.title || "#" }} </template>
-            <svg viewbox="0 0 90 180" height="1em" v-if="col.sortable">
-              <polygon
-                class="ui-table__asc"
-                points="0,75 45,30 90,75"
-                @click="sortAction(rindex)"
-              />
-              <polygon
-                class="ui-table__desc"
-                points="0,105 45,150, 90 105"
-                @click="sortAction(rindex)"
-              />
-            </svg>
-          </template>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="(row, rindex) in rebuildData"
-        :key="rowKey ? row._rowKey : rindex"
-        draggable
-      >
-        <td v-for="(col, cindex) in cols" :key="cindex">
-          <template v-if="col.type === rtype.INDEX">
-            {{ col.indexMethod ? col.indexMethod(row) : rindex }}
-          </template>
-          <input v-else-if="col.type === rtype.SELECTION" type="checkbox" />
-          <template v-else-if="col.type === rtype.HTML">
-            <span v-html="row[col.key]"></span>
-          </template>
+          <td
+            v-for="(col, cindex) in cols"
+            :key="cindex"
+            :class="cellclass(col)"
+          >
+            <template v-if="col.type === rtype.INDEX">
+              {{ col.indexMethod ? col.indexMethod(row) : rindex }}
+            </template>
+            <input v-else-if="col.type === rtype.SELECTION" type="checkbox" />
+            <template v-else-if="col.type === rtype.HTML">
+              <span v-html="row[col.key]"></span>
+            </template>
 
-          <template v-else-if="col.type === rtype.EXPAND">
-            <icon icon="jilu"></icon>
-          </template>
-          <render-expand
-            v-else-if="col.type === rtype.RENDER"
-            :row="row"
-            :col="col"
-            :index="row._index"
-            :render="col.render"
-          ></render-expand>
-          <render-cell
-            v-else-if="col.type === rtype.SLOT"
-            :row="row"
-            :col="col"
-            :index="row._index"
-            :display="col.display || 'block'"
-          ></render-cell>
-          <template v-else>
-            {{ row[col.key] }}
-          </template>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+            <template v-else-if="col.type === rtype.EXPAND">
+              <icon icon="jilu"></icon>
+            </template>
+            <render-expand
+              v-else-if="col.render"
+              :row="row"
+              :col="col"
+              :index="row._index"
+              :render="col.render"
+            ></render-expand>
+            <render-cell
+              v-else-if="col.slot"
+              :row="row"
+              :col="col"
+              :index="row._index"
+              :display="col.display || 'block'"
+            ></render-cell>
+            <template v-else>
+              {{ row[col.key] }}
+            </template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -99,8 +115,8 @@ import {
   simpleType,
   NumberLike,
   flatTree,
-} from "../utils";
-import UiThead from "./head";
+  unit,
+} from "./utils";
 // import UiTbody from "./body";
 var rowKey = 1;
 var colKey = 1;
@@ -130,8 +146,9 @@ export default {
     },
     renderCell: {
       functional: true,
+      inject: ["table"],
       props: {
-        render: Function,
+        row: Object,
         col: simpleType(Object, null),
         index: Number,
         display: simpleType(String, "block"),
@@ -143,16 +160,16 @@ export default {
           col: props.col,
           index: props.index,
         });
-        return c(scopeslot);
+        return c("div", {}, scopeslot);
       },
     },
     renderExpand: {
       functional: true,
       props: {
-        render: Function,
+        row: Object,
         col: simpleType(Object, null),
         index: Number,
-        row: Object,
+        render: Function,
       },
       render: (c, ctx) => {
         var props = ctx.props;
@@ -169,6 +186,7 @@ export default {
     data: complexType(Array),
     meta: complexType(Array),
     size: String,
+    align: String,
     width: [Number, String],
     height: [Number, String],
     maxHeight: [Number, String],
@@ -181,6 +199,7 @@ export default {
     unhover: Boolean,
     headerless: Boolean,
     highlight: Boolean,
+    fixedWidth: Boolean,
     rowclass: Function,
     context: Object,
     rowKey: simpleType([Boolean, String], false),
@@ -211,14 +230,35 @@ export default {
         rules: this.border.replace("pure", ""),
       };
     },
-    tableclass() {
-      return ns.b;
+    _tableclass() {
+      return [
+        ns.b,
+        ns.m(
+          this.stripe && "stripe",
+          this.unhover ? "" : "hover",
+          this.size,
+          this.fixedWidth && "fixed"
+        ),
+        ns.e(this.align),
+      ];
     },
+    _rowclass() {},
   },
   methods: {
+    headerclass(col) {
+      return ns.e(col.align);
+    },
+    cellclass(col) {
+      return ns.e(col.align);
+    },
     haschildren(o) {
       return o && o.children && o.children.length;
     },
+    setWidth(col) {
+      if (col.width) return unit(col.width);
+      return "";
+    },
+    class(col, row) {},
     setId(meta) {
       return meta.map((item) => {
         if (item.children) this.setId(item.children);
@@ -226,9 +266,22 @@ export default {
         return item;
       });
     },
-
+    setGrid(cols) {},
+    flatTree(cols, flag) {
+      // 将树结构进行平铺
+      const result = [];
+      cols.forEach((column) => {
+        if (column.children) {
+          flag && result.push(column);
+          result.push.apply(result, this.flatTree(column.children, flag));
+        } else {
+          result.push(column);
+        }
+      });
+      return result;
+    },
     setCols(meta) {
-      return deepclone(flatTree(meta)).map((col, index) => {
+      let d = deepclone(this.flatTree(meta)).map((col, index) => {
         col._index = index;
         col._colKey = colKey++;
         col.width = parseInt(col.width);
@@ -241,9 +294,45 @@ export default {
 
         return col;
       });
+      console.log(d);
+      return d;
     },
-    setRows(meta) {
-      return columns(meta);
+    setRows(cols) {
+      let maxLevel = 1;
+      function traverse(col, parent) {
+        if (parent) {
+          // 如果存在父级，则当前项的层级等于父层级+1，并更新最大层级变量
+          var l = (col.level = parent.level + 1);
+          if (maxLevel < l) maxLevel = l;
+        }
+        //设置跨列
+        if (col.children) {
+          let colspan = 0;
+          col.children.forEach((sub) => {
+            // 归的时候逐层将父级colspan累加上子项的colspan
+            traverse(sub, col);
+            colspan += sub.colspan;
+          });
+          col.colspan = colspan;
+        } else {
+          // 如果不存在子项,则不需要进行跨列，将colspan设为1
+          col.colspan = 1;
+        }
+      }
+      cols.forEach((col) => {
+        col.level = 1;
+        traverse(col);
+      });
+      // 初始化行数，总行数等于树深度
+      const rows = new Array(maxLevel).fill(0).map(() => Array());
+      // 平铺树结构
+      this.flatTree(cols, true).forEach((col) => {
+        // 跨行数 = 最大深度减去当前深度
+        if (!col.children) col.rowspan = maxLevel - col.level + 1;
+        else col.rowspan = 1;
+        rows[col.level - 1].push(col);
+      });
+      return rows;
     },
     setSort(data, type, index) {
       var col = this.cols[index];
@@ -316,6 +405,7 @@ export default {
   },
   created() {
     this.rebuildData = this.makeDataWithSortAndFilter();
+    console.log(this.rebuildData);
   },
 };
 </script>

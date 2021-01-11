@@ -1,31 +1,898 @@
 <template>
-  <tabble
-    border
-    highlight-row
-    content-menu
-    ref="selection"
-    :meta="columns0"
-    :data="data0"
-    row-key="id"
-  >
-    <template slot-scope="{ row }" slot="age">
-      <strong>{{ row }}</strong>
-    </template>
-  </tabble>
+  <div style="margin: 200px">
+    <div>TreeTable</div>
+    <Table
+      stripe
+      highlight-row
+      content-menu
+      ref="selection"
+      :meta="columns0"
+      :data="data0"
+      row-key="id"
+      :load-data="loadData"
+    >
+      <template slot-scope="{ row }" slot="age">
+        <strong>{{ row.age }}123</strong>
+      </template>
+    </Table>
+    <br /><br />
+    <Button @click="addData">添加数据</Button>
+    <Button @click="addData2">添加数据2</Button>
+    <Button @click="handleSelectAll(true)">Set all selected</Button>
+    <Button @click="handleSelectAll(false)">Cancel all selected</Button>
+    <div>合计</div>
+    <Table
+      size="small"
+      :meta="columns4"
+      :data="data11"
+      show-summary
+      :height="200"
+    ></Table>
+    <br />
+    <Table :meta="columns4" :data="data11" show-summary :height="200"></Table>
+    <br />
+    <Table
+      size="large"
+      :meta="columns4"
+      :data="data11"
+      show-summary
+      :height="200"
+    ></Table>
+    <br />
+    <Table border :meta="columns4" :data="data11" show-summary></Table>
+    <br />
+    <Table border :meta="columns5" :data="data11" show-summary></Table>
+    <br />
+    <Table border :meta="columns8" :data="data11" show-summary></Table>
+    <br />
+    <Table :meta="columns5" :data="data11" show-summary :height="200"></Table>
+    <div>合并单元格</div>
+    <Table :meta="columns1" :data="data1" :span-method="handleSpan"></Table>
+    <br />
+    <Table :meta="columns1" :data="data1" :span-method="handleSpan2"></Table>
+    <div>拖拽调整列宽</div>
+    <Table border :meta="columns1" :data="data1"></Table>
+    <div>排序筛选</div>
+    <div style="margin: 0 0px">
+      <Table
+        @on-column-width-resize="handleResize"
+        :meta="columns6"
+        :data="data5"
+      ></Table>
+    </div>
+    <div>普通表格</div>
+    <Table size="small" :meta="columns1" :data="data1"></Table>
+    <br />
+    <Table :meta="columns1" :data="data1"></Table>
+    <br />
+    <Table size="large" :meta="columns1" :data="data1"></Table>
+    <div>斑马纹</div>
+    <Table stripe :meta="columns1" :data="data1"></Table>
+    <div>带边框</div>
+    <Table border :meta="columns1" :data="data1"></Table>
+    <div>头固定（普通）</div>
+    <Table height="200" :meta="columns1" :data="data2"></Table>
+    <div>头固定（边框）</div>
+    <Table height="200" border :meta="columns1" :data="data2"></Table>
+    <div>列固定（普通）</div>
+    <Table width="550" :meta="columns2" :data="data3"></Table>
+    <div>列固定（边框）</div>
+    <Table width="550" border :meta="columns2" :data="data3"></Table>
+    <div>都固定（普通）</div>
+    <Table width="550" height="200" :meta="columns2" :data="data4"></Table>
+    <div>都固定（边框）</div>
+    <Table width="550" height="200" :meta="columns2" :data="data4"></Table>
+    <Table :meta="columns11" :data="data10" height="500"></Table>
+    <div>表头分组（边框）</div>
+    <Table border="all" :meta="columns11" :data="data10" height="500"></Table>
+  </div>
 </template>
-
 <script>
-import tabble from "./table/table.vue";
+import Table from "./table.vue";
 export default {
-  components: {
-    tabble,
-  },
+  components: { Table },
   data() {
     return {
-      columns0: [
+      columns4: [
         {
-          type: 2,
+          title: "ID",
+          key: "id",
+        },
+        {
+          title: "姓名",
+          key: "name",
+        },
+        {
+          title: "数值 1",
+          key: "amount1",
+        },
+        {
+          title: "数值 2",
+          key: "amount2",
+        },
+        {
+          title: "数值 3",
+          key: "amount3",
+        },
+      ],
+      columns5: [
+        {
+          title: "ID",
+          key: "id",
+          fixed: "left",
+          width: 180,
+        },
+        {
+          title: "姓名",
+          key: "name",
+          width: 250,
+        },
+        {
+          title: "数值 1",
+          key: "amount1",
+          width: 250,
+          fixed: "right",
+        },
+        {
+          title: "数值 2",
+          key: "amount2",
+          width: 250,
+        },
+        {
+          title: "数值 3",
+          key: "amount3",
+          width: 180,
+        },
+      ],
+      columns8: [
+        {
+          title: "ID",
+          key: "id",
+          fixed: "left",
+          width: 180,
+        },
+        {
+          title: "姓名",
+          key: "name",
+        },
+        {
+          title: "数值 1",
+          key: "amount1",
+          width: 250,
+          fixed: "right",
+        },
+        {
+          title: "数值 2",
+          key: "amount2",
+        },
+        {
+          title: "数值 3",
+          key: "amount3",
+        },
+      ],
+      data11: [
+        {
+          id: "12987122",
+          name: "王小虎",
+          amount1: "234",
+          amount2: "3.2",
+          amount3: 10,
+        },
+        {
+          id: "12987123",
+          name: "王小虎",
+          amount1: "165",
+          amount2: "4.43",
+          amount3: 12,
+        },
+        {
+          id: "12987124",
+          name: "王小虎",
+          amount1: "324",
+          amount2: "1.9",
+          amount3: 9,
+        },
+        {
+          id: "12987125",
+          name: "王小虎",
+          amount1: "621",
+          amount2: "2.2",
+          amount3: 17,
+        },
+        {
+          id: "12987126",
+          name: "王小虎",
+          amount1: "539",
+          amount2: "4.1",
+          amount3: 15,
+        },
+      ],
+      columns6: [
+        {
+          title: "Date",
+          key: "date",
+          sortable: true,
+          resizable: true,
+          width: 180,
+        },
+        {
+          title: "Name",
+          key: "name",
+          resizable: true,
+          width: 180,
+        },
+        {
+          title: "Age",
+          key: "age",
+          sortable: true,
+          resizable: true,
+          width: 180,
+          filters: [
+            {
+              label: "Greater than 25",
+              value: 1,
+            },
+            {
+              label: "Less than 25",
+              value: 2,
+            },
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            if (value === 1) {
+              return row.age > 25;
+            } else if (value === 2) {
+              return row.age < 25;
+            }
+          },
+        },
+        {
+          title: "Address",
+          key: "address",
+          filters: [
+            {
+              label: "New York",
+              value: "New York",
+            },
+            {
+              label: "London",
+              value: "London",
+            },
+            {
+              label: "Sydney",
+              value: "Sydney",
+            },
+          ],
+          filterMethod(value, row) {
+            return row.address.indexOf(value) > -1;
+          },
+        },
+      ],
+      data5: [
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          date: "2016-10-03",
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "London No. 1 Lake Park",
+          date: "2016-10-01",
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          date: "2016-10-02",
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+      ],
+      columns1: [
+        {
+          title: "Name",
+          key: "name",
+        },
+        {
+          title: "Age",
+          key: "age",
+        },
+        {
+          title: "Address",
+          key: "address",
+        },
+      ],
+      data1: [
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          date: "2016-10-03",
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "London No. 1 Lake Park",
+          date: "2016-10-01",
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          date: "2016-10-02",
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+        {
+          name: "Jon Snow2",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+        {
+          name: "Jon Snow3",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+        {
+          name: "Jon Snow4",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+      ],
+      data2: [
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          date: "2016-10-03",
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "London No. 1 Lake Park",
+          date: "2016-10-01",
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          date: "2016-10-02",
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          date: "2016-10-03",
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "London No. 1 Lake Park",
+          date: "2016-10-01",
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          date: "2016-10-02",
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          date: "2016-10-04",
+        },
+      ],
+      columns2: [
+        {
+          title: "Name",
+          key: "name",
+          width: 100,
+          fixed: "left",
+        },
+        {
+          title: "Age",
+          key: "age",
+          width: 100,
+        },
+        {
+          title: "Province",
+          key: "province",
+          width: 100,
+        },
+        {
+          title: "City",
+          key: "city",
+          width: 100,
+        },
+        {
+          title: "Address",
+          key: "address",
+          width: 200,
+        },
+        {
+          title: "Postcode",
+          key: "zip",
+          width: 100,
+        },
+        {
+          title: "Action",
+          key: "action",
+          fixed: "right",
+          width: 120,
+          render: (h, params) => {
+            return h("div", [
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "text",
+                    size: "small",
+                  },
+                },
+                "View"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "text",
+                    size: "small",
+                  },
+                },
+                "Edit"
+              ),
+            ]);
+          },
+        },
+      ],
+      data4: [
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          province: "America",
+          city: "New York",
+          zip: 100000,
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "Washington, D.C. No. 1 Lake Park",
+          province: "America",
+          city: "Washington, D.C.",
+          zip: 100000,
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          province: "Australian",
+          city: "Sydney",
+          zip: 100000,
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          province: "Canada",
+          city: "Ottawa",
+          zip: 100000,
+        },
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          province: "America",
+          city: "New York",
+          zip: 100000,
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "Washington, D.C. No. 1 Lake Park",
+          province: "America",
+          city: "Washington, D.C.",
+          zip: 100000,
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          province: "Australian",
+          city: "Sydney",
+          zip: 100000,
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          province: "Canada",
+          city: "Ottawa",
+          zip: 100000,
+        },
+      ],
+      data3: [
+        {
+          name: "John Brown",
+          age: 18,
+          address: "New York No. 1 Lake Park",
+          province: "America",
+          city: "New York",
+          zip: 100000,
+        },
+        {
+          name: "Jim Green",
+          age: 24,
+          address: "Washington, D.C. No. 1 Lake Park",
+          province: "America",
+          city: "Washington, D.C.",
+          zip: 100000,
+        },
+        {
+          name: "Joe Black",
+          age: 30,
+          address: "Sydney No. 1 Lake Park",
+          province: "Australian",
+          city: "Sydney",
+          zip: 100000,
+        },
+        {
+          name: "Jon Snow",
+          age: 26,
+          address: "Ottawa No. 2 Lake Park",
+          province: "Canada",
+          city: "Ottawa",
+          zip: 100000,
+        },
+      ],
+      columns11: [
+        {
+          title: "Name",
+          key: "name",
+          align: "center",
+          width: 200,
+          fixed: "left",
+          filters: [
+            {
+              label: "Joe",
+              value: 1,
+            },
+            {
+              label: "John",
+              value: 2,
+            },
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            if (value === 1) {
+              return row.name === "Joe";
+            } else if (value === 2) {
+              return row.name === "John Brown";
+            }
+          },
+        },
+        {
+          title: "Other",
+          align: "center",
+          children: [
+            {
+              title: "Age",
+              key: "age",
+              align: "center",
+              width: 200,
+              sortable: true,
+            },
+            {
+              title: "Address",
+              align: "center",
+              children: [
+                {
+                  title: "Street",
+                  key: "street",
+                  align: "center",
+                  width: 200,
+                },
+                {
+                  title: "Block",
+                  align: "center",
+                  children: [
+                    {
+                      title: "Building",
+                      key: "building",
+                      align: "center",
+                      width: 200,
+                      sortable: true,
+                    },
+                    {
+                      title: "Door No.",
+                      key: "door",
+                      align: "center",
+                      width: 200,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: "Company",
+          align: "center",
+          children: [
+            {
+              title: "Company Address",
+              key: "caddress",
+              align: "center",
+              width: 200,
+            },
+            {
+              title: "Company Name",
+              key: "cname",
+              align: "center",
+              width: 200,
+            },
+          ],
+        },
+        {
+          title: "Gender",
+          key: "gender",
+          align: "center",
+          width: 200,
+          fixed: "right",
+        },
+      ],
+      data10: [
+        {
+          key: 0,
+          name: "John Brown",
+          age: 1,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 1,
+          name: "John Brown",
+          age: 2,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 2,
+          name: "John Brown",
+          age: 3,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 3,
+          name: "John Brown",
+          age: 4,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 4,
+          name: "John Brown",
+          age: 5,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 5,
+          name: "John Brown",
+          age: 6,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 6,
+          name: "John Brown",
+          age: 7,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 7,
+          name: "John Brown",
+          age: 8,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 8,
+          name: "John Brown",
+          age: 9,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 9,
+          name: "John Brown",
+          age: 10,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 10,
+          name: "John Brown",
+          age: 11,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 11,
+          name: "John Brown",
+          age: 12,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 12,
+          name: "John Brown",
+          age: 13,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 13,
+          name: "John Brown",
+          age: 14,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 14,
+          name: "John Brown",
+          age: 15,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 15,
+          name: "John Brown",
+          age: 16,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 16,
+          name: "John Brown",
+          age: 17,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 17,
+          name: "John Brown",
+          age: 18,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 18,
+          name: "John Brown",
+          age: 19,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+        {
+          key: 19,
+          name: "John Brown",
+          age: 20,
+          street: "Lake Park",
+          building: "C",
+          door: 2035,
+          caddress: "Lake Street 42",
+          cname: "SoftLake Co",
+          gender: "M",
+        },
+      ],
+      columns0: [
+        // {
+        //     type: 'index',
+        //     width: 60,
+        //     align: 'center'
+        // },
+        {
+          type: 0,
           width: 60,
+          title: "序号",
           align: "center",
         },
         {
@@ -36,6 +903,7 @@ export default {
         {
           title: "Age",
           key: "age",
+          slot: "age",
           sortable: true,
           filters: [
             {
@@ -47,7 +915,7 @@ export default {
               value: 2,
             },
           ],
-          filters: false,
+          filterMultiple: false,
           filterMethod(value, row) {
             if (value === 1) {
               return row.age > 180;
@@ -209,8 +1077,119 @@ export default {
       ],
     };
   },
+  methods: {
+    handleResize(width) {
+      console.log(width);
+    },
+    handleSpan({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex % 2 === 0) {
+        if (columnIndex === 0) {
+          return [1, 2];
+        } else if (columnIndex === 1) {
+          return [0, 0];
+        }
+      }
+    },
+    handleSpan2({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        if (rowIndex % 2 === 0) {
+          return {
+            rowspan: 2,
+            colspan: 1,
+          };
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0,
+          };
+        }
+      }
+    },
+    handleSelectAll(status) {
+      this.$refs.selection.selectAll(status);
+    },
+    occ(n, o) {
+      // console.log(n);
+      // console.log(o);
+    },
+    orc(data, index) {
+      // console.log(data);
+      // console.log(index);
+    },
+    ordc(data, index) {
+      // console.log(data);
+      // console.log(index);
+    },
+    os(s, r) {
+      // console.log(s);
+      // console.log(r);
+    },
+    osc(s, r) {
+      console.log(s);
+      console.log(r);
+    },
+    osa(s) {
+      console.log(s);
+    },
+    osac(s) {
+      console.log(s);
+    },
+    ocm(s, e) {
+      console.log(s);
+      console.log(e);
+    },
+    loadData(item, callback) {
+      setTimeout(() => {
+        const data = [
+          {
+            id: "10000",
+            name: "张三1",
+            age: 123,
+            address: "1发动机莲富大厦放假了开始的",
+            date: "2016-10-01",
+          },
+          {
+            id: "10001",
+            name: "张三2",
+            age: 124,
+            address: "2发动机莲富大厦放假了开始的",
+            date: "2016-10-02",
+          },
+        ];
+        callback(data);
+      }, 1000);
+    },
+    addData() {
+      const d = this.data0[3];
+      d.children = [
+        {
+          id: "10000",
+          name: "张三1",
+          age: 123,
+          address: "1发动机莲富大厦放假了开始的",
+          date: "2016-10-01",
+        },
+        {
+          id: "10001",
+          name: "张三2",
+          age: 124,
+          address: "2发动机莲富大厦放假了开始的",
+          date: "2016-10-02",
+        },
+      ];
+      this.$set(this.data0, 3, d);
+    },
+    addData2() {
+      this.data0.push({
+        id: "104",
+        name: "Jon Snow4",
+        age: 124,
+        address: "Ottawa No. 2 Lake Park",
+        date: "2016-10-04",
+        _disabled: true,
+        level: 0,
+      });
+    },
+  },
 };
 </script>
-
-<style>
-</style>
