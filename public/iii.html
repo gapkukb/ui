@@ -1,0 +1,319 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+  <title>Document</title>
+  <link rel="stylesheet" href="./gm.min.css">
+  <style>
+    body {
+      padding: 10px
+    }
+
+    .table--outline {
+      height: 200px;
+    }
+
+    .table+.table {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    input {
+      -webkit-appearance: radio;
+    }
+  </style>
+</head>
+<script>
+  function HTML(row, col) {
+    row = row || 2
+    col = col || 6
+    var html = ""
+    for (var i = 0; i < row; i++) {
+      html += "<tr>"
+      for (var j = 0; j < col; j++) {
+        html += "<td>数据" + i + "</td>"
+      }
+      html += "</tr>"
+    }
+    return html
+  }
+</script>
+
+
+<body>
+  <p>***tfoot必须写在tbody之前，有利于加快渲染***</p>
+
+  <form id="form">
+    <div>
+      <span>frame:</span>
+      <label><input checked type="radio" name="frame" value="box">box 同时显示四条边框。</label>
+      <label><input type="radio" name="frame" value="border">border 同时显示四条边框。</label>
+      <label><input type="radio" name="frame" value="above">above 只显示顶部边框。</label>
+      <label><input type="radio" name="frame" value="below">below 只显示底部边框。</label>
+      <label><input type="radio" name="frame" value="lhs">lhs 只显示左侧边框。</label>
+      <label><input type="radio" name="frame" value="rhs">rhs 只显示右侧边框。</label>
+      <label><input type="radio" name="frame" value="hsides">hsides 只显示水平方向的两条边框。</label>
+      <label><input type="radio" name="frame" value="vsides">vsides 只显示垂直方面的两条边框</label>
+      <label><input type="radio" name="frame" value="void">void 不显示边框，默认值</label>
+    </div>
+    <div>
+      <span>rules:</span>
+      <label><input checked type="radio" name="rules" value="all">all 为所有行列（单元格）加边框</label>
+      <label><input type="radio" name="rules" value="groups">groups 为行组或列组加边框。</label>
+      <label><input type="radio" name="rules" value="rows">rows 为行加边框。</label>
+      <label><input type="radio" name="rules" value="cols">cols 为列加边框。</label>
+      <label><input type="radio" name="rules" value="none">none 默认值。无边框。</label>
+    </div>
+  </form>
+
+  <table class="table" rules="all" frame="border" id="table">
+    <caption>表格边框 通过表格属性frame和rules来控制边框</caption>
+    <colgroup>
+      <col width="70">
+      <col span="4">
+      <col width="70">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>表头1</th>
+        <th>表头2</th>
+        <th>表头3</th>
+        <th>表头3</th>
+        <th>表头3</th>
+        <th>表头4</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>表底1</th>
+        <th>表底2</th>
+        <th>表底3</th>
+        <th>表底4</th>
+        <th>表底5</th>
+        <th>表底6</th>
+      </tr>
+    </tfoot>
+    <tbody id="tbody1">
+      <script>
+
+        var table = document.getElementById("table")
+        table.tBodies[0].innerHTML = HTML(6)
+        document.getElementById("form").onchange = function () {
+          var formdata = new FormData(this)
+          // table.setAttribute('frame',formdata.get("frame"))
+          // table.setAttribute('rules',formdata.get("rules"))
+          table.frame = formdata.get("frame")
+          table.rules = formdata.get("rules")
+        }
+      </script>
+    </tbody>
+  </table>
+  <!-- 固定列 -->
+  <form id="form2">
+    <div>
+      <div>单元格固定:顶部是固定thead 底部固定是tfoot 左侧固定是tbody第一列，右侧固定是tbody最后一列</div>
+      <span>选择：</span>
+      <label><input checked type="checkbox" name="fixed" value="table--sticky-top">顶部固定</label>
+      <label><input checked type="checkbox" name="fixed" value="table--sticky-left">左侧固定</label>
+      <label><input checked type="checkbox" name="fixed" value="table--sticky-bottom">底部固定</label>
+      <label><input checked type="checkbox" name="fixed" value="table--sticky-right">右侧固定</label>
+    </div>
+  </form>
+  <div class="caption">
+    固定行列 采用sticky定位，不支持IE
+    <a style="color:blueviolet;"
+      href="https://stackoverflow.com/questions/11891065/css-only-scrollable-table-with-fixed-headers">IE参考</a>
+    <a style="color:blueviolet;" href="http://jsfiddle.net/At8L8/">IE参考</a>
+  </div>
+  <div class="table--outline">
+    <table class="table table--sticky-top table--sticky-left table--sticky-bottom table--sticky-right" frame="below"
+      rules="all" id="table2" style="width: 200%;">
+      <colgroup>
+        <col width="70">
+        <col span="4">
+        <col width="70">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>表头1</th>
+          <th>表头2</th>
+          <th>表头3</th>
+          <th>表头3</th>
+          <th>表头3</th>
+          <th>表头4</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>表底1</th>
+          <th>表底2</th>
+          <th>表底3</th>
+          <th>表底4</th>
+          <th>表底5</th>
+          <th>表底6</th>
+        </tr>
+      </tfoot>
+      <tbody id="tbody2">
+        <script>
+          document.getElementById("tbody2").innerHTML = HTML(10)
+          var table2 = document.getElementById("table2")
+          document.getElementById("form2").onchange = function () {
+            table2.className = "table " + new FormData(this).getAll("fixed").join(" ")
+          }
+
+        </script>
+      </tbody>
+
+    </table>
+  </div>
+
+  <table class="table table--striped" frame="border" rules="all">
+    <caption>斑马线 table--striped</caption>
+    <thead>
+      <tr>
+        <th>表头1</th>
+        <th>表头2</th>
+        <th>表头3</th>
+        <th>表头4</th>
+        <th>表头5</th>
+        <th>表头6</th>
+      </tr>
+    </thead>
+    <tbody id="tbody3">
+      <script>
+        document.getElementById('tbody3').innerHTML = HTML(4)
+      </script>
+    </tbody>
+    </tbody>
+  </table>
+  <table class="table table--striped-col" frame="border" rules="all">
+    <caption>斑马线 table--striped-col</caption>
+    <thead>
+      <tr>
+        <th>表头1</th>
+        <th>表头2</th>
+        <th>表头3</th>
+        <th>表头4</th>
+        <th>表头5</th>
+        <th>表头6</th>
+      </tr>
+    </thead>
+    <tbody id="tbody4">
+      <script>
+        document.getElementById('tbody4').innerHTML = HTML(4)
+      </script>
+    </tbody>
+    </tbody>
+  </table>
+  <table class="table table--dense" frame="border" rules="all">
+    <caption>小号间隔 table--dense / 每列宽度 colgroup / 选中项 table__row--active</caption>
+    <colgroup>
+      <col width="60">
+      <col width="60">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>表头1</th>
+        <th>表头2</th>
+        <th>表头3</th>
+        <th>表头4</th>
+        <th>表头5</th>
+        <th>表头6</th>
+      </tr>
+    </thead>
+    <tbody id="tbody5">
+      <script>
+        var body = document.getElementById('tbody5')
+        body.innerHTML = HTML(4)
+        body.children[2].className = 'table__row--active'
+      </script>
+    </tbody>
+    </tbody>
+  </table>
+  <table class="table" frame="border" rules="all">
+    <caption>过滤 table--filter 右侧筛选按钮:focus-within不支持IE，可以改为:hover支持</caption>
+    <thead>
+      <tr>
+        <th class="table__filter tooltip">
+          表头1
+          <svg viewbox="0,0,200,200" width="1em" height="1em" fill="#999" class="table__active">
+            <polygon points="100,0 160,85 40,85" fill="currentColor" />
+            <polygon points="40,115 160,115 100,200" />
+          </svg>
+          <div class="tooltip__body tooltip__body--top">
+            点击排序
+          </div>
+        </th>
+        <th class="table__filter">
+          <span>表头2</span>
+          <button type="button" class="table__icon table__active">
+            <svg viewBox="64 64 896 896" width=".8em" height=".8em" fill="currentColor">
+              <path
+                d="M349 838c0 17.7 14.2 32 31.8 32h262.4c17.6 0 31.8-14.3 31.8-32V642H349v196zm531.1-684H143.9c-24.5 0-39.8 26.7-27.5 48l221.3 376h348.8l221.3-376c12.1-21.3-3.2-48-27.7-48z">
+              </path>
+            </svg>
+            <div class="table__search">
+              <div style="padding: 4px;"><input type="text" placeholder="搜索条件"></div>
+              <!-- <button style="-webkit-appearance: none;" class="button">重置</button> -->
+              <!-- <button class="button">确定</button> -->
+            </div>
+          </button>
+        </th>
+        <th>表头3</th>
+        <th>表头4</th>
+        <th>表头5</th>
+        <th>表头6</th>
+      </tr>
+    </thead>
+    <tbody id="tbody6">
+      <script>
+        document.getElementById('tbody6').innerHTML = HTML(4)
+
+      </script>
+      <tr>
+        <td colspan="6">2</td>
+
+      </tr>
+    </tbody>
+    </tbody>
+  </table>
+
+  <table class="table table--resizable" frame="border" rules="all">
+    <caption>可调节 table--resize 可调节列宽度</caption>
+    <thead>
+      <tr>
+        <th>表头1</th>
+        <th>表头2</th>
+        <th>表头3</th>
+        <th>表头4</th>
+        <th>表头5</th>
+        <th>表头6</th>
+      </tr>
+    </thead>
+    <tbody id="tbody7">
+      <script>
+        document.getElementById('tbody7').innerHTML = HTML(4)
+
+      </script>
+    </tbody>
+    </tbody>
+  </table>
+
+
+<script>
+  setTimeout(() => {
+    var trs = document.getElementsByTagName("tr")
+    Array.from(trs).forEach(el => {
+      el.draggable=true
+      el.ondragstart=function(){
+        alert(1)
+      }
+    });
+  }, 1000);
+</script>
+
+</body>
+
+</html>

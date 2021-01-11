@@ -1,178 +1,167 @@
 <template>
-  <div id="app">
-    <!-- <Pager v-model="page1" :total="300" :size="5" />{{ page1 }}
-    <Pager v-model="page2" :total="300" :size="10" />
-    <Pager v-model="page3" :total="300" :size="10" :formater="formater">
-      <template #prev>123</template>
-    </Pager>
-    <Pager v-model="page4" :total="50" :size="10" :sizeOption="[1, 2, 3, 4]" jumper /> -->
-    <!-- <dropdown
-      ref="drop"
-      mutiple
-      v-model="arr"
-      :data="dropdown"
-      @click="click"
-      icon="jilu"
-      right-icon
-      :auto-close="false"
-      style="margin-left:300px"
-    >
-    </dropdown>
-    {{ arr }}
-    <div style="width:300px;height:300px"></div>
-    <dropdown :data="dropdown" style="margin-left:300px"></dropdown> -->
-    <!-- <imager round fit="contain" width="100" height="100" src="https://file.iviewui.com/asd/asd-pro-3.png"></imager>
-    <imager round fit="fill" width="100" height="100" src="https://file.iviewui.com/asd/asd-pro-3.png"></imager>
-    <imager round fit="cover" width="100" height="100" src="https://file.iviewui.com/asd/asd-pro-3.png"></imager>
-    <imager
-      round
-      :error="true"
-      fit="none"
-      width="100"
-      height="100"
-      src="https://file.iviewui.com/asd/asd-pro-3.png"
-    ></imager>
-    <imager
-      round
-      :loading="true"
-      radius="10"
-      width="100"
-      height="100"
-      src="https://file.iviewui.com/asd/asd-pro-3.png"
-    ></imager> -->
-    <!-- <slider :height="300" :width="500">
-      <slider-item v-for="item in arr" tag="a" href="/abc"
-        ><img src="https://file.iviewui.com/asd/asd-pro-3.png" alt=""
-      /></slider-item>
-    </slider> -->
-    <!-- <row gap="xs,sm=sm,md=md,lg=lg,xl=xl" inline-gap="10" justify="center">
-      <column span="md=8,lg=6" order="1" at="core">456</column>
-    </row> -->
-    <!-- <row :gap="{ xl: 'sm', 'sm-x': 'md' }" align="top" justify="left" nowrap>
-      <column>123</column>
-      <column>456</column>
-      <column>789</column>
-    </row>
-    <row gap="xl" align="bottom" justify="right" nowrap>
-      <column>123</column>
-      <column>456</column>
-      <column>789</column>
-    </row>
-    <row gap="10" align="center" justify="around" nowrap>
-      <column>123</column>
-      <column>456</column>
-      <column>789</column>
-    </row>
-    <row gap="10" align="center" justify="between" multiple="" nowrap>
-      <column>123</column>
-      <column>456</column>
-      <column>789</column>
-    </row> -->
-    <!-- <field
-      :formatter="formatter"
-      format-by="blur"
-      colon
-      label="小数"
-      v-model="page4"
-      type="number"
-      maxlength="16"
-      rows="4"
-    >
-    </field> -->
-    <!-- <field type="number"></field>
-    <field type="digit"></field>
-    <field v-model.trim="page4"></field> -->
-
-    <i-table :metas="cols" :data="data"></i-table>
-  </div>
+  <tabble
+    border
+    highlight-row
+    content-menu
+    ref="selection"
+    :meta="columns0"
+    :data="data0"
+    row-key="id"
+  >
+    <template slot-scope="{ row }" slot="age">
+      <strong>{{ row }}</strong>
+    </template>
+  </tabble>
 </template>
-<script>
-import Vue from "vue";
-import Pager from "./pager";
-import { Dropdown } from "./dropdown";
-import Slider, { SliderItem } from "./carousel";
-import { Row, Column } from "./grid";
-import { Field } from "./field";
-import { Table } from "./table";
-import icon from "./icon";
 
+<script>
+import tabble from "./table/table.vue";
 export default {
   components: {
-    Pager,
-    Dropdown,
-    Slider,
-    SliderItem,
-    Row,
-    Column,
-    Field,
-    icon,
-    iTable: Table,
+    tabble,
   },
   data() {
     return {
-      cols: [
+      columns0: [
+        {
+          type: 2,
+          width: 60,
+          align: "center",
+        },
         {
           title: "Name",
           key: "name",
-          align: "center",
-          width: 200,
-          fixed: "left",
+          tree: true,
+        },
+        {
+          title: "Age",
+          key: "age",
+          sortable: true,
           filters: [
             {
-              label: "Joe",
+              label: "Greater than 180",
               value: 1,
             },
             {
-              label: "John",
+              label: "Less than 180",
               value: 2,
             },
           ],
-          filterMultiple: false,
+          filters: false,
           filterMethod(value, row) {
             if (value === 1) {
-              return row.name === "Joe";
+              return row.age > 180;
             } else if (value === 2) {
-              return row.name === "John Brown";
+              return row.age < 180;
             }
           },
         },
         {
-          title: "Other",
-          align: "center",
-          children: [
+          title: "Date",
+          key: "date",
+        },
+        {
+          title: "Address",
+          key: "address",
+          filters: [
             {
-              title: "Age",
-              key: "age",
-              align: "center",
-              width: 200,
-              sortable: true,
+              label: "New York",
+              value: "New York",
             },
             {
-              title: "Address",
-              align: "center",
+              label: "London",
+              value: "London",
+            },
+            {
+              label: "Sydney",
+              value: "Sydney",
+            },
+          ],
+          filterMethod(value, row) {
+            return row.address.indexOf(value) > -1;
+          },
+        },
+      ],
+      data0: [
+        {
+          id: "100",
+          name: "John Brown",
+          age: 118,
+          address: "New York No. 1 Lake Park",
+          date: "2016-10-03",
+          _disabled: true,
+          level: 0,
+          _loading: false,
+          children: [],
+        },
+        {
+          id: "101",
+          name: "Jim Green",
+          age: 224,
+          address: "London No. 1 Lake Park",
+          date: "2016-10-01",
+          _showChildren: true,
+          _disabled: false,
+          level: 0,
+          children: [
+            {
+              id: "10100",
+              name: "张三",
+              age: 235,
+              address: "发动机莲富大厦放假了开始的",
+              date: "2016-10-01",
+              level: 1,
+            },
+            {
+              id: "10101",
+              name: "李四",
+              age: 129,
+              address: "风刀霜剑分离的思路开发",
+              date: "2016-10-02",
+              level: 1,
+            },
+            {
+              id: "10102",
+              name: "王五",
+              age: 290,
+              address: "分离的付款就说个就是范德萨发生",
+              date: "2016-10-03",
+              _showChildren: true,
+              level: 1,
               children: [
                 {
-                  title: "Street",
-                  key: "street",
-                  align: "center",
-                  width: 200,
+                  id: "10102100",
+                  name: "赵六",
+                  age: 111,
+                  address: "梵蒂冈人太热疼我",
+                  date: "2016-10-05",
+                  level: 2,
                 },
                 {
-                  title: "Block",
-                  align: "center",
+                  id: "10102101",
+                  name: "丁八",
+                  age: 272,
+                  address: "法第三方的范德萨范德萨发送到",
+                  date: "2016-10-06",
+                  _showChildren: true,
+                  level: 2,
                   children: [
                     {
-                      title: "Building",
-                      key: "building",
-                      align: "center",
-                      width: 200,
-                      sortable: true,
+                      id: "10102101100",
+                      name: "第九",
+                      age: 123,
+                      address: "9梵蒂冈人太热疼我",
+                      date: "2016-10-07",
+                      _disabled: true,
+                      level: 3,
                     },
                     {
-                      title: "Door No.",
-                      key: "door",
-                      align: "center",
-                      width: 200,
+                      id: "10102101101",
+                      name: "第十",
+                      age: 254,
+                      address: "10法第三方的范德萨范德萨发送到",
+                      date: "2016-10-08",
+                      level: 3,
                     },
                   ],
                 },
@@ -181,102 +170,47 @@ export default {
           ],
         },
         {
-          title: "Company",
-          align: "center",
+          id: "102",
+          name: "Joe Black",
+          age: 130,
+          address: "Sydney No. 1 Lake Park",
+          date: "2016-10-02",
+          _disabled: false,
+          level: 0,
+          _showChildren: false,
           children: [
             {
-              title: "Company Address",
-              key: "caddress",
-              align: "center",
-              width: 200,
+              id: "10200",
+              name: "张三3",
+              age: 235,
+              address: "发动机莲富大厦放假了开始的",
+              date: "2016-10-01",
+              level: 1,
             },
             {
-              title: "Company Name",
-              key: "cname",
-              align: "center",
-              width: 200,
+              id: "10201",
+              name: "张三4",
+              age: 235,
+              address: "发动机莲富大厦放假了开始的",
+              date: "2016-10-01",
+              level: 1,
             },
           ],
         },
         {
-          title: "Gender",
-          key: "gender",
-          align: "center",
-          width: 200,
-          fixed: "right",
-        },
-      ],
-      data: [
-        {
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03",
-          __active: true,
-          __checked: true,
-          __disabled: true,
-          __expanded: true,
-          __disabledExpand: true,
-          __children: [],
-          __activeChildren: true,
-          __loading: true, //异步加载子项，配合load-children函数
-        },
-        {
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01",
-        },
-        {
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02",
-        },
-        {
+          id: "103",
           name: "Jon Snow",
-          age: 26,
+          age: 126,
           address: "Ottawa No. 2 Lake Park",
           date: "2016-10-04",
+          _disabled: true,
+          level: 0,
         },
       ],
     };
   },
-  methods: {
-    formatter(value) {
-      console.log(value);
-      return value * 1000;
-    },
-    keypress() {
-      console.log(this.page1);
-    },
-    click(e) {
-      alert(e);
-    },
-  },
-  mounted() {
-    setTimeout(() => {
-      this.arr = [1, 23, 4, 6, 7];
-      this.count = 10;
-      setTimeout(() => {
-        this.arr = [1];
-        setTimeout(() => {
-          this.arr = [1, 2, 3];
-          setTimeout(() => {
-            this.arr = [];
-          }, 1000);
-        }, 1000);
-      }, 1000);
-      // this.$refs.drop.toggle();
-      // this.dropdown = [1, 2, 3, 3, 45, 5, 6123];
-    }, 3000);
-  },
 };
 </script>
-<style lang="stylus">
-.ui-pager__active
-  background-color red
-.ui-pager__disabled
-  background-color #000000
-  color #fff
+
+<style>
 </style>

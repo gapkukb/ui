@@ -339,3 +339,14 @@ for $i in 0 2 4 6 8 12 14 16 18 20
   cursor pointer
   user-select none
   touch-action manipulation
+
++block( view )
+  +element( exception )
+    padding 100px 0
+    text-align center
+
+    &
+      @extends $unselectable
+
+  +element( text )
+    padding 40px 0

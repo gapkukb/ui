@@ -1,4 +1,4 @@
-+block( option )
+/* +block( option )
   $gap = $gaps.xs
   margin-right $gap * -1
   cursor pointer
@@ -64,3 +64,39 @@
 
         ^[1]+&
           margin-left 0.5em
+ */
+/* checkbox */
+html
+  -webkit-tap-highlight-color transparent
+
++block( lgroup )
+  +modifier( col )
+    flex-direction column
+
+  +modifier( row )
+    flex-direction row
+
+  &
+    @extends $inline
+
++block( label )
+  cursor pointer
+
+  &
+    @extends $inline
+    @extends $unselectable
+
+  +modifier( disabled )
+    opacity 0.6
+    cursor not-allowed
+
+  +modifier( readonly )
+    cursor not-allowed
+
+  +element( text )
+    margin-left 8px
+
+  +element( reverse )
+    order -1
+    margin-right 8px
+    margin-left 0

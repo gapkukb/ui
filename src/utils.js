@@ -10,7 +10,7 @@ export const assert = (function() {
   type.boolean = (x) => type.def(x) && (typeof x === "boolean" || x instanceof Boolean);
   type.array = (x) => type.def(x) && Array.isArray(x);
   type.object = (x) => ({}.toString.call(x) === "[object Object]");
-  type.assert = (x, X) => type.def(x) && x instanceof X;
+  type.typeof = (x, X) => type.def(x) && x instanceof X;
   type.set = (x) => type.assert(x, Set);
   type.map = (x) => type.assert(x, Map);
   type.date = (x) => type.assert(x, Date);
@@ -48,8 +48,8 @@ Object.assign =
 
 export const NumberLike = [String, Number];
 
-function Bem(block) {
-  this.b = "ui-" + block;
+function Bem(block, extend) {
+  this.b = extend ? block : "ui-" + block;
 }
 Bem.prototype = {
   _(x, sep) {
@@ -66,11 +66,30 @@ Bem.prototype = {
   m() {
     return this._(arguments, "--");
   },
+  ext(e) {
+    return new Bem(this.e(e), true);
+  },
+  mix() {
+    return this.b + " " + this.join(arguments);
+  },
   join() {
     return Array.prototype.join.call(arguments, " ");
   },
 };
-
+export function simpleType(type, value) {
+  return {
+    type: type,
+    default: value || (type === String ? "" : type === Number ? 0 : type === Boolean ? false : null),
+  };
+}
+export function complexType(type, value) {
+  return {
+    type: type,
+    default() {
+      return value || (type === Array ? [] : type === Object ? {} : null);
+    },
+  };
+}
 export const NS = (b) => new Bem(b);
 
 export const randomId = (n = 8) => {
@@ -114,7 +133,7 @@ export function columns(cols) {
   // 初始化行数，总行数等于树深度
   const rows = new Array(maxLevel).fill(0).map(() => Array());
   // 平铺树结构
-  getAll(columns).forEach((column) => {
+  flatTree(columns).forEach((column) => {
     // 跨行数 = 最大深度减去当前深度
     if (!column.children) column.rowspan = maxLevel - column.level + 1;
     else column.rowspan = 1;
@@ -131,7 +150,7 @@ function makeId(columns) {
   });
 }
 
-function getAll(cols) {
+export function flatTree(cols) {
   // 将树结构进行平铺
   const result = [];
   cols.forEach((column) => {
@@ -144,3 +163,41 @@ function getAll(cols) {
   });
   return result;
 }
+
+export function deepclone(data) {
+  let clone, i;
+  if (assert.array(data)) {
+    clone = [];
+    for (i = 0; i < data.length; i++) clone.push(deepclone(data[i]));
+  } else if (assert.object(data)) {
+    clone = {};
+    for (i in data) clone[i] = deepclone(data[i]);
+  } else {
+    return data;
+  }
+  return clone;
+}
+
+export var isImg = (function() {
+  var imgPathReg = /\.(png|gif|svg|jpg|webp)$/;
+  return function(s) {
+    return imgPathReg.test(s);
+  };
+})();
+
+export const CONST = {
+  RENDER_TYPE: {
+    INDEX: 0,
+    HTML: 1,
+    SELECTION: 2,
+    NORMAL: 3,
+    EXPAND: 4,
+    RENDER: 5,
+    SLOT: 6,
+  },
+  TABLE_FRAME: {
+    NONE: "void",
+    PUREROWS: "hsides",
+    PURECOLS: "vsides",
+  },
+};

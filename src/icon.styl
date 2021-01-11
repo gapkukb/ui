@@ -1,10 +1,8 @@
 +block( icon )
   position relative
-  font-style normal
+  display inline-block
+  height 1em
   font-size inherit
-
-  &
-    @extends $inline
 
   +element( img )
     width 1em
@@ -13,20 +11,19 @@
 
   +element( badge )
     position absolute
-    top -8px
-    right -8px
-    box-sizing border-box
-    padding 2px 4px
-    min-width 16px
-    border-radius 99px
+    top 0
+    right 0
+    box-sizing content-box
+    min-width 1.4em
+    height @min-width
+    border-radius 1em
     background-color #ee0a24
     color #fff
     text-align center
     font-weight normal
     font-size 12px
+    transform translate( 50%, -50% )
+    transform-origin 100%
 
     &:empty
-      top -4px
-      right -4px
-      padding 4px
-      min-width 0
+      font-size 6px
