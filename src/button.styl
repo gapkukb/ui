@@ -1,8 +1,6 @@
 +block( button )
-  display inline-block
   overflow visible
   box-sizing border-box
-  padding 0 24px
   outline 0
   border 1px solid transparent
   border-radius 8px
@@ -13,10 +11,28 @@
   text-decoration none
   text-transform uppercase
   font inherit
-  font-size 16px
   cursor pointer
   transition all 300ms
   user-select none
+
+  &
+    @extends $inline
+
+  /
+    +block( icon )
+      ^[0]>&
+        height 1em
+        line-height 1
+
+  +element( icon )
+    margin-right 8px
+
+  +element( icon-right )
+    margin-left 8px
+
+$md
+  padding 0 24px
+  font-size 16px
   lineheight 40px
 
 $sm
@@ -32,9 +48,9 @@ $xs
 +block( button )
   &:disabled
   &.disabled
-    background #5d5a59
-    color #949494
-    cursor not-allowed
+    background #5d5a59 !important
+    color #949494 !important
+    cursor not-allowed !important
 
     &:not(button)
       pointer-events none
@@ -52,7 +68,14 @@ $xs
     width 40px
 
     ../
-      +modifier( sm )
+      +modifier( md )
+        ^[1]&
+          width 40px
+
+        &
+          @extends $sm
+
+      +modifier( md )
         ^[1]&
           width 32px
 
@@ -65,6 +88,10 @@ $xs
 
         &
           @extends $xs
+
+  +modifier( md )
+    &
+      @extends $md
 
   +modifier( sm )
     &
@@ -126,22 +153,7 @@ $xs
       color #4d4d4d
 
   +modifier( "block" )
-    display block
-
-  &[icon]
-  &[icon-right]
-    font-style normal
-    font-size 100%
-    font-family "iconfont"
-    -webkit-font-smoothing antialiased
-
-  &[icon]:before
-    margin-right 1em
-    content attr( icon )
-
-  &[icon-right]:before
-    margin-left 1em
-    content attr( icon-right )
+    width 100%
 
   /
     +block( bgroup )
@@ -150,6 +162,10 @@ $xs
 
       &>^[0]
         border-radius 0
+
+      +modifier( md )
+        &>^[0]
+          @extends $md
 
       +modifier( sm )
         &>^[0]

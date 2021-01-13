@@ -71,7 +71,7 @@ export var Row = {
     }
     var classes = {
       "ui-row": !this.inline,
-      "ui-row-inline": !this.inline,
+      "ui-row-inline": this.inline,
       "ui-row--nowrap": this.nowrap,
       "ui-row--reverse": this.reverse,
       "ui-row--column": this.column,

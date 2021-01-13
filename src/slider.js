@@ -1,4 +1,5 @@
 import icon from "./icon";
+import { NumberLike, simpleType } from "./utils";
 function withUnit(x, unit) {
   return !x && x !== 0 ? null : Number(x) ? x + (unit || "px") : x;
 }
@@ -20,18 +21,11 @@ export const SliderItem = {
 export default {
   components: { icon },
   props: {
-    autoplay: numberLike,
-    duration: {
-      type: numberLike,
-      default: "300ms",
-    },
-    initial: numberLike,
-    interval: {
-      type: numberLike,
-      default: 1000,
-    },
-    width: numberLike,
-    height: numberLike,
+    autoplay: Boolean,
+    duration: simpleType(NumberLike, "300ms"),
+    interval: simpleType(NumberLike, 2000),
+    width: NumberLike,
+    height: NumberLike,
     prevIcon: {
       type: String,
       default: "jilu",
@@ -41,12 +35,12 @@ export default {
       default: "jilu",
     },
     loop: Boolean,
-    show: Boolean,
+    showControl: Boolean,
     vertical: Boolean,
     touchable: Boolean,
     stop: Boolean,
     lazy: Boolean,
-    indicator: String,
+    showIndicator: Boolean,
   },
   data() {
     return {
@@ -67,6 +61,9 @@ export default {
     dotIndex() {
       return (this.index + this.length) % this.length;
     },
+    vitual() {
+      return this.$children.length + 2;
+    },
   },
   methods: {
     go(step) {
@@ -77,62 +74,84 @@ export default {
     goto(i, silent = false) {
       if (this.moving) return;
       this.moving = !silent;
-      this.moveBefore();
+      var track = this.$refs.track;
+      if (this.index < 0) {
+        this.translate(track.lastChild, this.length * 100 * -1);
+      } else if (this.index === this.length) {
+        this.translate(track.firstChild, this.length * 100);
+      }
       var x = i * 100 * -1;
-      this.$refs.track.style.cssText = `transition-duration:${silent ? 0 : this.duration};transform: translateX(${x}%)`;
+      track.style.transitionDuration = silent ? "0ms" : this.duration;
+      this.translate(track, x);
+    },
+    translate(el, value) {
+      el.style.transform = `translateX(${value}%)`;
     },
     next() {
-      this.index++;
-      this.goto(this.index);
-      this.timer = setTimeout(this.next, Number(this.interval));
-    },
-    autoPlay() {
-      this.clear();
-      if (this.length <= 1) return;
-      this.next();
-    },
-    withUnit(x, unit) {
-      return withUnit(x, unit);
-    },
-    moveBefore() {
-      if (this.index < 0) {
-        this.$refs.track.lastChild.style.transform = `translateX(${this.length * 100 * -1}%)`;
-      } else if (this.index === this.length) {
-        this.$refs.track.firstChild.style.transform = `translateX(${this.length * 100}%)`;
-      }
+      this.timer = setTimeout(() => {
+        this.index = (this.index + 1) % this.vitual;
+        this.goto(this.index);
+        this.next();
+      }, Number(this.interval));
     },
     moveEnd() {
       this.moving = false;
+      var silent = false;
       if (this.index < 0) {
-        this.$refs.track.lastChild.style.transform = ``;
+        this.$refs.track.lastChild.style.transform = "";
         this.index = this.length - 1;
+        this.goto(this.index, true);
       } else if (this.index === this.length) {
-        this.$refs.track.firstChild.style.transform = ``;
+        this.$refs.track.firstChild.style.transform = "";
         this.index = 0;
+        silent = true;
       }
-      this.goto(this.index, true);
+      silent ? this.goto(this.index, true) : this.$emit("changed", this.index);
     },
     clear() {
-      if (this.timer) clearTimeout(this.timer);
+      clearTimeout(this.timer);
+    },
+    start() {
+      if (this.length <= 1) return;
+      this.next();
     },
     init() {
-      this.length = (this.$slots.default || []).length;
-      this.clear();
-      if (this.initTimer) clearTimeout(this.initTimer);
+      this.length = this.$children.length;
+      clearTimeout(this.initTimer);
+      clearTimeout(this.timer);
       if (this.length <= 1) return;
       this.initTimer = setTimeout(() => {
-        this.autoPlay();
         this.index = 0;
         this.moving = false;
         this.goto(0, true);
-      }, 300);
+        this.next();
+      }, 0);
     },
   },
   mounted() {
     this.init();
   },
+  template: `
+    <div class="ui-slider" :style={width:w,height:h} @mouseenter="clear"  @mouseleave="start()">
+      <slot name="prev" v-if="length>1">
+        <div class="ui-slider__ctrl ui-slider__prev" @click="go(-1)">
+          <ui-icon icon="prevIcon"></ui-icon>
+        </div>
+      </slot>
+      <slot name="next" v-if="length>1">
+        <div class="ui-slider__ctrl ui-slider__next" @click="go(1)">
+          <ui-icon icon="nextIcon"></ui-icon>
+        </div>
+      </slot>
+      <div ref="track" class="ui-slider__track" @transitionend="moveEnd"><slot/></div>
+      <div class="ui-slider__dots">
+      {{counts}}
+        <i v-for="i in length" class="slider__dot" :class="{'ui-slider__active': i === dotIndex}"></i>
+      </div>
+  `,
   render(c) {
     var _this = this;
+    this.length = (this.$slots.default || []).length;
     return c(
       "div",
       {
@@ -143,7 +162,7 @@ export default {
         },
         on: {
           mouseenter: this.clear,
-          mouseleave: this.autoPlay,
+          mouseleave: this.start,
         },
       },
       [
@@ -157,7 +176,7 @@ export default {
               [
                 c("icon", {
                   attrs: {
-                    name: this.prevIcon,
+                    icon: this.prevIcon,
                   },
                   on: {
                     click: function() {
@@ -177,7 +196,7 @@ export default {
               [
                 c("icon", {
                   attrs: {
-                    name: this.nextIcon,
+                    icon: this.nextIcon,
                   },
                   on: {
                     click: function() {

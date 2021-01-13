@@ -208,7 +208,7 @@ for $type in "margin" "padding"
 
   for $item in 0 12 14 16 18 20 24 36 48
     +modifier( $item )
-      font-size $item
+      font-size $item * 1px
 
 +block( vertical )
   for $k, $v in $vertical-aligns

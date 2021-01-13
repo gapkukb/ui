@@ -48,19 +48,10 @@ export var Field = {
       type: String,
       default: "change",
     },
-    icon: {
-      type: String,
-      default: "jilu",
-    },
-    iconRight: {
-      type: String,
-      default: "jilu",
-    },
+    icon: String,
+    iconRight: String,
     iconPrefix: String,
-    iconLink: {
-      type: String,
-      default: "jilu",
-    },
+    iconLink: String,
     rules: null,
   },
   data() {

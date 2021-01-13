@@ -10,11 +10,28 @@
   +modifier( "round" )
     border-radius 9999px
 
+  +modifier( fluent )
+    position relative
+    width 100%
+
+    &:before
+      display inline-block
+      padding-bottom 100%
+      min-height 1px
+      width 0
+      content ""
+
+    /
+      +element( img )
+        ^[0]>&
+          position absolute
+
   +element( img )
     display block
     width 100%
     height 100%
     border-radius inherit
+    object-fit contain
 
   +group(  )
     element( loading )

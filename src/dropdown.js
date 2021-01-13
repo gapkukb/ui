@@ -1,29 +1,38 @@
 import icon from "./icon";
 
-const DropdownItem = {
+export const DropdownItem = {
   name: "dropdown-item",
   components: {
     icon,
   },
   props: {
     divided: Boolean,
-    selected: Boolean,
     disabled: Boolean,
     icon: String,
+    label: String,
     selectedIcon: String,
     rightIcon: Boolean,
+    value: null,
+    prefix: String,
+  },
+  data() {
+    return {
+      selected: false,
+    };
   },
   methods: {
     handler() {
       if (this.disabled) return;
-      this.$emit("click", this.value, this.id);
+      this.selected = !this.selected;
+      this.$parent.dispatch(this.label, this.value, this);
+      // this.$parent.dispatch(this);
     },
   },
   render(c) {
     return c(
       "div",
       {
-        staticClass: "ui-dropdown__item ui--pretty-bar",
+        staticClass: "ui-dropdown__item",
         class: {
           "ui-dropdown__divided": this.divided,
           "ui-dropdown__disabled": this.disabled,
@@ -40,8 +49,7 @@ const DropdownItem = {
             name: this.selected ? this.selectedIcon : this.icon,
           },
         }),
-        this.label,
-        this.$slots.default,
+        this.$slots.default || this.label,
       ]
     );
   },
@@ -56,10 +64,7 @@ export const Dropdown = {
     return {
       filter: "",
       active: false,
-      style: {},
       timer: 0,
-      list: this.makeData(),
-      click: false,
     };
   },
   props: {
@@ -68,10 +73,7 @@ export const Dropdown = {
       type: Boolean,
       default: true,
     },
-    title: {
-      type: String,
-      default: "请选择",
-    },
+    title: String,
     data: Array,
     icon: String,
     selectedIcon: String,
@@ -82,8 +84,9 @@ export const Dropdown = {
     formater: Function,
   },
   watch: {
-    data() {
-      this.list = this.makeData();
+    value(val) {
+      console.log(val);
+      this.selectedChilren();
     },
     active(val) {
       if (val) {
@@ -96,43 +99,41 @@ export const Dropdown = {
     },
   },
   methods: {
-    makeData() {
-      return (this.data || []).map((item) => {
-        if (typeof item === "object")
-          return this.creatItem(item.label, item.value, item.disabled, item.divided, item.selected);
-        return this.creatItem(item, item);
-      });
-    },
-    creatItem(label, value, disabled, divided, selected) {
-      return {
-        label: label || "",
-        value: value || "",
-        disabled: disabled || false,
-        divided: divided || false,
-        selected: selected || false,
-      };
-    },
-    handler(i) {
-      var f = !this.list[i].selected;
-      if (this.autoClose) {
-        this.active = false;
-      }
-      if (!this.mutiple) {
-        this.list.forEach((i) => {
-          i.selected = false;
-        });
-      }
-      this.list[i].selected = f;
-      this.$emit("input", this.mutiple ? this.list.filter((i) => i.selected).map((i) => i.value) : f);
-    },
-    toggle(flag) {
-      this.active = typeof flag === "boolean" ? flag : !this.active;
-    },
     bind(e) {
       if (!this.$el.contains(e.target)) this.active = false;
     },
+    dispatch(label, value, child) {
+      var raw = child.selected;
+      var v = value || label;
+      var origin;
+      if (this.mutiple) {
+        origin = Array.isArray(this.value) ? this.value : [];
+        var i = origin.indexOf(v);
+        if (i !== -1) {
+          origin.splice(i, 1);
+        } else {
+          origin.push(v);
+        }
+      } else {
+        this.$children.forEach((i) => (i.selected = false));
+        child.selected = raw;
+        origin = raw ? v : null;
+      }
+      this.$emit("input", origin);
+    },
+    selectedChilren() {
+      this.$children.forEach((i) => {
+        var v = i.value || i.label;
+        if (this.mutiple) {
+          i.selected = this.value.indexOf(v) !== -1;
+        } else {
+          i.selected = v === this.value;
+        }
+      });
+    },
   },
   mounted() {
+    this.selectedChilren();
     document.addEventListener("click", this.bind, false);
   },
   beforeDestory() {
@@ -144,30 +145,16 @@ export const Dropdown = {
         <slot name="rel">{{title}}<icon name="jingbao" class="ui-dropdown__icon"></icon></slot>
       </div>
       <transition name="ui-dropdown">
-      <div class="ui-dropdown__main" ref="body"  v-show="active" :style="style">
+      <div class="ui-dropdown__main" :class="bodyClass" ref="body"  v-model="active">
         <div class="ui-dropdown__inner">
-          <slot name="title"></slot>
-          <div class="ui-beauty ui-dropdown__body">
-            <slot>
-              <dropdown-item
-                v-for="(item,index) in list"
-                :key="index"
-                :disabled ="item.disabled"
-                :selected ="item.selected"
-                :divided  = "item.divided"
-                :icon="icon"
-                :selected-icon="selectedIcon"
-                :right-icon="rightIcon"
-                @click="handler(index)"
-              >{{formater?formater(item.label):item.label}}</dropdown-item>
-            </slot>
+          <slot name="header"></slot>
+          <div class="ui--pretty-bar ui-dropdown__body">
+            <slot></slot>
           </div>
           <slot name="footer"></slot>
         </div>
       </div>
       </transition>
-
     </div>
-
   `,
 };
